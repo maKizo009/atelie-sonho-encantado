@@ -1,0 +1,39 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Ateliê Sonho Encantado - Decorações e brinquedos artesanais e personalizados para quartos infantis." />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Playpen+Sans:wght@300..600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-blush-aveia text-marrom-cafe font-sans min-h-screen antialiased selection:bg-abacate-suave/30 selection:text-musgo-profundo">
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
+
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		scroll-behavior: smooth;
+	}
+</style>

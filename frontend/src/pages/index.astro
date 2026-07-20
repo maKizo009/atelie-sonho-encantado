@@ -1,0 +1,268 @@
+---
+import BaseHTML from '../layouts/BaseHTML.astro';
+import { CardProduto } from '../components/CardProduto';
+import { Image } from 'astro:assets';
+
+// Interface do Produto tipado para o frontend Astro
+interface Produto {
+  id: string;
+  nome: string;
+  preco: number;
+  imagem: string;
+  tag3D: boolean;
+}
+
+let produtos: Produto[] = [];
+
+try {
+  const response = await fetch('http://localhost:3001/produtos');
+  if (response.ok) {
+    produtos = await response.json();
+  } else {
+    throw new Error('Falha ao obter produtos');
+  }
+} catch (error) {
+  console.log('Backend indisponível durante o build. Usando mock local de fallback para SSG.');
+  produtos = [
+    {
+      id: "1",
+      nome: "Chaveiro Borboleta Coleção Natureza",
+      preco: 24.90,
+      imagem: "https://images.unsplash.com/photo-1582139329536-e7284fece509?q=80&w=600&auto=format&fit=crop",
+      tag3D: true,
+    },
+    {
+      id: "2",
+      nome: "Sapatinho Crochê Conforto Algodão",
+      preco: 59.90,
+      imagem: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?q=80&w=600&auto=format&fit=crop",
+      tag3D: false,
+    },
+    {
+      id: "3",
+      nome: "Vaso de Suculenta Impresso em 3D",
+      preco: 45.00,
+      imagem: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=600&auto=format&fit=crop",
+      tag3D: true,
+    }
+  ];
+}
+---
+
+<BaseHTML title="Ateliê Sonho Encantado - Artesanato & Impressão 3D">
+  <!-- Top Promotion Bar -->
+  <div class="bg-musgo-profundo text-blush-aveia text-xs font-display py-2 px-4 text-center tracking-wider flex items-center justify-center gap-2">
+    <span>✨</span> FRETE GRÁTIS nas compras acima de R$ 150,00! <span>✨</span>
+  </div>
+
+  <!-- Navbar / Header -->
+  <header class="bg-blush-aveia/80 backdrop-blur-md sticky top-0 z-40 border-b border-marrom-cafe/5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+      <!-- Logo Container -->
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="relative w-16 h-16 flex-shrink-0">
+          <!-- Custom SVG Magic Wand to Yarn Logo -->
+          <svg viewBox="0 0 100 100" class="w-full h-full text-abacate-suave fill-none stroke-current" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Magic Wand Stick -->
+            <line x1="25" y1="75" x2="60" y2="40" stroke="#96B475" stroke-width="3" />
+            <!-- Star Tip -->
+            <path d="M 60 40 L 59 34 L 54 33 L 59 30 L 60 24 L 62 30 L 67 33 L 62 34 Z" fill="#96B475" stroke="none" />
+            <!-- Magic Sparkles Line curling into Yarn Ball -->
+            <path d="M 60 34 C 70 25, 78 30, 80 40 C 82 50, 75 58, 68 55 C 62 52, 65 42, 72 45 C 78 48, 76 56, 70 54 M 62 30 C 58 20, 48 24, 48 30" stroke="#96B475" stroke-width="1.5" stroke-dasharray="3 3" />
+            <circle cx="72" cy="48" r="8" stroke="#96B475" stroke-width="1" class="animate-pulse" />
+            <circle cx="72" cy="48" r="5" stroke="#96B475" stroke-width="0.75" />
+            <path d="M 68 44 Q 72 40 76 44 M 66 48 Q 72 52 78 48" stroke="#96B475" stroke-width="0.75" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[10px] tracking-[0.25em] font-sans text-marrom-cafe/60 uppercase font-semibold leading-none">Ateliê</span>
+          <span class="text-2xl font-display font-bold text-musgo-profundo tracking-tight leading-none">Sonho</span>
+          <span class="text-xl font-handwritten text-abacate-suave-dark leading-none -mt-0.5">Encantado</span>
+          <span class="text-[8px] tracking-[0.1em] font-sans text-marrom-cafe/40 uppercase font-medium mt-0.5">Artesanato & Impressão 3D</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-marrom-cafe/80">
+        <a href="#produtos" class="hover:text-abacate-suave-dark transition-colors">Coleção</a>
+        <a href="#sobre" class="hover:text-abacate-suave-dark transition-colors">O Ateliê</a>
+        <a href="#contato" class="hover:text-abacate-suave-dark transition-colors">Contato</a>
+      </nav>
+
+      <!-- Cart and Search Actions -->
+      <div class="flex items-center gap-4">
+        <button class="p-2 text-marrom-cafe/80 hover:text-abacate-suave-dark transition-colors rounded-full hover:bg-white/50" aria-label="Pesquisar">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+          </svg>
+        </button>
+        <button class="p-2 text-marrom-cafe/80 hover:text-abacate-suave-dark transition-colors rounded-full hover:bg-white/50 relative" aria-label="Carrinho">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          <span class="absolute top-1 right-1 bg-abacate-suave text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Hero / Highlight Banner -->
+    <section class="bg-gradient-to-br from-white via-white to-blush-aveia/60 rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-stone-100/50 mb-16 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+      <!-- Abstract cozy background shapes -->
+      <div class="absolute -right-24 -bottom-24 w-96 h-96 bg-abacate-suave/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-12 -top-12 w-64 h-64 bg-musgo-profundo/5 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="max-w-xl flex-grow z-10">
+        <span class="inline-flex items-center gap-1.5 bg-abacate-suave/10 text-abacate-suave-dark text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+          ✨ Mágica em cada detalhe
+        </span>
+        <h1 class="text-4xl sm:text-5xl font-display font-bold text-musgo-profundo leading-tight mb-4">
+          Artesanato e <br />
+          <span class="text-abacate-suave-dark font-handwritten font-normal">Impressão 3D</span>
+        </h1>
+        <p class="text-base text-marrom-cafe/70 mb-8 leading-relaxed">
+          Unindo o aconchego do feito à mão com a inovação da tecnologia. Peças exclusivas criadas com amor de mãe para encantar o seu dia a dia.
+        </p>
+        <a 
+          href="#produtos" 
+          class="inline-flex items-center justify-center bg-abacate-suave hover:bg-abacate-suave-dark text-white font-display font-medium px-8 py-4 rounded-2xl transition-all duration-300 shadow-md shadow-abacate-suave/25 active:scale-95 group gap-2"
+        >
+          Comprar Agora
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 transition-transform group-hover:translate-x-1">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Hero Image / Visual Representation -->
+      <div class="w-full md:w-1/2 max-w-md z-10">
+        <div class="relative bg-blush-aveia rounded-3xl overflow-hidden aspect-[4/3] shadow-md border border-stone-200/40">
+          <Image 
+            src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600&auto=format&fit=crop" 
+            alt="Ateliê Sonho Encantado Crafts" 
+            width={600}
+            height={450}
+            class="w-full h-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-musgo-profundo/20 to-transparent"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories selector bar -->
+    <section class="mb-16">
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-stone-100 flex flex-wrap items-center justify-around gap-6">
+        <a href="#produtos" class="flex flex-col items-center gap-2 group">
+          <div class="w-16 h-16 rounded-full bg-blush-aveia flex items-center justify-center text-2xl group-hover:bg-abacate-suave/25 transition-all duration-300 group-hover:scale-110 shadow-inner">
+            🩴
+          </div>
+          <span class="text-xs font-display font-medium text-marrom-cafe tracking-widest uppercase group-hover:text-abacate-suave-dark transition-colors">Chinelos</span>
+        </a>
+        <div class="w-px h-8 bg-stone-200 hidden sm:block"></div>
+        <a href="#produtos" class="flex flex-col items-center gap-2 group">
+          <div class="w-16 h-16 rounded-full bg-blush-aveia flex items-center justify-center text-2xl group-hover:bg-abacate-suave/25 transition-all duration-300 group-hover:scale-110 shadow-inner">
+            🔑
+          </div>
+          <span class="text-xs font-display font-medium text-marrom-cafe tracking-widest uppercase group-hover:text-abacate-suave-dark transition-colors">Chaveiros</span>
+        </a>
+        <div class="w-px h-8 bg-stone-200 hidden sm:block"></div>
+        <a href="#produtos" class="flex flex-col items-center gap-2 group">
+          <div class="w-16 h-16 rounded-full bg-blush-aveia flex items-center justify-center text-2xl group-hover:bg-abacate-suave/25 transition-all duration-300 group-hover:scale-110 shadow-inner">
+            🖨️
+          </div>
+          <span class="text-xs font-display font-medium text-marrom-cafe tracking-widest uppercase group-hover:text-abacate-suave-dark transition-colors">3D Print</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Grid de Produtos -->
+    <section id="produtos" class="mb-16 scroll-mt-24">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+        <div>
+          <h2 class="text-3xl font-display font-bold text-musgo-profundo">Coleção Destaque</h2>
+          <p class="text-sm text-marrom-cafe/60 mt-1">Peças exclusivas, feitas com carinho e precisão.</p>
+        </div>
+        <span class="bg-white border border-stone-100 text-xs font-medium text-marrom-cafe/60 px-4 py-2 rounded-2xl shadow-sm">
+          {produtos.length} produtos encontrados
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {produtos.map((produto) => (
+          <CardProduto 
+            client:load 
+            nome={produto.nome}
+            preco={produto.preco}
+            imagem={produto.imagem}
+            tag3D={produto.tag3D}
+          />
+        ))}
+      </div>
+    </section>
+
+    <!-- Cozy details section -->
+    <section id="sobre" class="bg-white rounded-[2.5rem] p-8 md:p-12 border border-stone-100/80 shadow-sm mb-16 flex flex-col md:flex-row gap-8 items-center scroll-mt-24">
+      <div class="w-full md:w-1/2 aspect-[4/3] rounded-3xl overflow-hidden shadow-inner">
+        <Image 
+          src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?q=80&w=600&auto=format&fit=crop" 
+          alt="Handmade with love" 
+          width={600}
+          height={450}
+          class="w-full h-full object-cover"
+        />
+      </div>
+      <div class="w-full md:w-1/2 max-w-lg">
+        <span class="text-abacate-suave-dark font-handwritten text-lg mb-2 block">Feito com Amor por Mãe</span>
+        <h2 class="text-3xl font-display font-bold text-musgo-profundo mb-4">A essência do feito à mão</h2>
+        <p class="text-marrom-cafe/70 leading-relaxed mb-6">
+          No Ateliê Sonho Encantado, cada peça conta uma história de criatividade e dedicação. Misturamos a suavidade e textura dos chaveiros e chinelos manuais com a precisão futurista da modelagem e impressão 3D, garantindo designs únicos que dão vida às suas ideias.
+        </p>
+        <div class="flex items-center gap-3 text-sm text-marrom-cafe/80 font-medium">
+          <span class="w-8 h-8 rounded-full bg-blush-aveia flex items-center justify-center text-base">🌱</span>
+          Sustentabilidade e materiais selecionados
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer id="contato" class="bg-white border-t border-stone-100 py-12 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
+      <div class="flex flex-col items-center md:items-start text-center md:text-left">
+        <span class="text-lg font-display font-bold text-musgo-profundo">Ateliê Sonho Encantado</span>
+        <span class="text-xs text-marrom-cafe/50 mt-1">© 2026 Ateliê Sonho Encantado. Todos os direitos reservados.</span>
+      </div>
+      
+      <!-- Instagram contact details -->
+      <a 
+        href="https://instagram.com/ateliesonhoencantado" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="inline-flex items-center gap-2 text-marrom-cafe/70 hover:text-abacate-suave-dark transition-colors font-medium text-sm bg-blush-aveia px-4 py-2 rounded-full border border-stone-150"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-4 h-4" viewBox="0 0 16 16">
+          <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.444-.048-3.298c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.999 0zm1.978 1.795a4.7 4.7 0 0 1 1.419.263c.311.121.562.287.816.541.254.254.42.505.542.816.121.311.263.89.263 1.419.003.52.01.68.01 1.978s-.007 1.458-.01 1.978a4.7 4.7 0 0 1-.262 1.419 2.9 2.9 0 0 1-.543.816 2.9 2.9 0 0 1-.816.542c-.311.121-.89.263-1.419.263-.52.003-.68.01-1.978.01-1.3 0-1.458-.007-1.978-.01a4.7 4.7 0 0 1-1.419-.263 2.9 2.9 0 0 1-.816-.542 2.9 2.9 0 0 1-.542-.816 4.7 4.7 0 0 1-.263-1.419c-.003-.52-.01-.68-.01-1.978s.007-1.458.01-1.978a4.7 4.7 0 0 1 .263-1.419c.121-.311.287-.562.541-.816.254-.254.505-.42.816-.542.311-.121.89-.263 1.419-.263.52-.003.68-.01 1.978-.01s1.458.007 1.978.01z"/>
+          <path d="M8 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 6.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm4.75-6.75a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+        </svg>
+        @ateliesonhoencantado
+      </a>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Action Button (Using Soft Avocado Green) -->
+  <a 
+    href="https://wa.me/5500000000000" 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    class="fixed bottom-6 right-6 z-50 bg-abacate-suave hover:bg-abacate-suave-dark text-white p-4 rounded-full shadow-lg shadow-abacate-suave/30 transition-all duration-300 hover:scale-110 active:scale-95 flex items-center justify-center group"
+    aria-label="Fale conosco no WhatsApp"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="w-6 h-6" viewBox="0 0 16 16">
+      <path d="M13.601 2.326A7.85 7.85 0 0 0 8 0a7.86 7.86 0 0 0-6.617 3.634 7.88 7.88 0 0 0-.794 3.902c0 1.258.296 2.453.86 3.52L.175 16l4.982-1.308a7.86 7.86 0 0 0 3.737.936c3.275 0 6.002-2.313 6.702-5.41a7.81 7.81 0 0 0-.995-5.892zM8 14.5a6.52 6.52 0 0 1-3.305-.897l-.237-.14-2.955.775.788-2.88-.153-.244A6.47 6.47 0 0 1 1.5 8c0-3.584 2.916-6.5 6.5-6.5s6.5 2.916 6.5 6.5-2.916 6.5-6.5 6.5zm3.69-4.86c-.198-.099-1.17-.578-1.353-.646-.182-.068-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.09-.088.198-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+    </svg>
+    <span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-in-out text-sm font-medium whitespace-nowrap">
+      Fale Conosco
+    </span>
+  </a>
+</BaseHTML>
