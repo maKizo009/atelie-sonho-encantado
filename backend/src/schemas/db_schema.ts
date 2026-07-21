@@ -11,7 +11,7 @@ export const usuarios = sqliteTable('usuarios', {
   criadoEm: text('criado_em').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// 2. Tabela de Produtos (com Soft Delete e Rascunho)
+// 2. Tabela de Produtos (com Soft Delete, Rascunho e Estoque)
 export const produtos = sqliteTable('produtos', {
   id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   nome: text('nome').notNull(),
@@ -20,6 +20,7 @@ export const produtos = sqliteTable('produtos', {
   imagem: text('imagem').notNull(),
   tag3D: integer('tag3d', { mode: 'boolean' }).notNull().default(false),
   isRascunho: integer('is_rascunho', { mode: 'boolean' }).notNull().default(false),
+  quantidadeEstoque: integer('quantidade_estoque').notNull().default(0), // Quantidade física à venda
   deletedAt: text('deleted_at'), // Para Soft Delete
   criadoEm: text('criado_em').default(sql`CURRENT_TIMESTAMP`),
 });

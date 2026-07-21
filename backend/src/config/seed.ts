@@ -37,7 +37,7 @@ async function seed() {
 
     console.log('👤 Usuários ADMIN e SUPERUSER criados com sucesso!');
 
-    // 3. Criar Produtos com custo de produção, preço de venda, rascunhos e deletados
+    // 3. Criar Produtos com custo de produção, preço de venda, rascunhos, deletados e estoque
     const [p1] = await db.insert(produtos).values({
       nome: 'Ursinho de Pelúcia Sonho',
       precoVenda: 89.90,
@@ -45,6 +45,7 @@ async function seed() {
       imagem: 'https://images.unsplash.com/photo-1559251606-c623743a6d76?q=80&w=600&auto=format&fit=crop',
       tag3D: false,
       isRascunho: false,
+      quantidadeEstoque: 15,
     }).returning();
 
     const [p2] = await db.insert(produtos).values({
@@ -54,6 +55,7 @@ async function seed() {
       imagem: 'https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?q=80&w=600&auto=format&fit=crop',
       tag3D: false,
       isRascunho: false,
+      quantidadeEstoque: 8,
     }).returning();
 
     const [p3] = await db.insert(produtos).values({
@@ -63,6 +65,7 @@ async function seed() {
       imagem: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=600&auto=format&fit=crop',
       tag3D: true,
       isRascunho: false,
+      quantidadeEstoque: 20,
     }).returning();
 
     // Produto Rascunho (Não visível no site principal)
@@ -73,6 +76,7 @@ async function seed() {
       imagem: 'https://images.unsplash.com/photo-1582139329536-e7284fece509?q=80&w=600&auto=format&fit=crop',
       tag3D: true,
       isRascunho: true,
+      quantidadeEstoque: 50,
     });
 
     // Produto Deletado via Soft Delete
@@ -83,6 +87,7 @@ async function seed() {
       imagem: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?q=80&w=600&auto=format&fit=crop',
       tag3D: false,
       isRascunho: false,
+      quantidadeEstoque: 2,
       deletedAt: new Date().toISOString(),
     });
 

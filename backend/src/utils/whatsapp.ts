@@ -11,8 +11,11 @@ export function gerarLinkWhatsApp(
   // Mantém apenas os números do telefone (DDI + DDD + Número)
   const telefoneLimpo = telefone.replace(/\D/g, '');
 
+  // Fallback para a variável de ambiente se o telefone estiver em branco
+  const foneFinal = telefoneLimpo || (process.env.STORE_WHATSAPP || '5511999999999').replace(/\D/g, '');
+
   // Formata o número inicial com DDI padrão do Brasil (55) caso não tenha
-  const destinatario = telefoneLimpo.length <= 11 ? `55${telefoneLimpo}` : telefoneLimpo;
+  const destinatario = foneFinal.length <= 11 ? `55${foneFinal}` : foneFinal;
 
   let mensagem = '';
 

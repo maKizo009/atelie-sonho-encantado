@@ -6,15 +6,15 @@ import {
   DollarSign, 
   ShieldAlert, 
   Trash2, 
-  Edit3, 
   Plus, 
   LogOut, 
-  Check, 
   MessageSquare,
   FileText,
   User,
-  Activity,
-  AlertTriangle
+  AlertTriangle,
+  Upload,
+  BarChart3,
+  Layers
 } from 'lucide-react';
 
 // Interfaces para os tipos de dados
@@ -26,6 +26,7 @@ interface Produto {
   imagem: string;
   tag3D: boolean;
   isRascunho: boolean;
+  quantidadeEstoque: number;
 }
 
 interface Pedido {
@@ -45,6 +46,14 @@ interface DashboardMetrics {
   custoProducao: number;
   lucroLiquido: number;
   pedidosPendentes: number;
+  faturamentoEsperadoEstoque: number;
+  lucroEsperadoEstoque: number;
+  historicoMensal: {
+    mes: string;
+    faturamento: number;
+    custoProducao: number;
+    lucroLiquido: number;
+  }[];
 }
 
 export default function App() {
@@ -67,18 +76,21 @@ export default function App() {
     custoMaterial: 0,
     custoProducao: 0,
     lucroLiquido: 0,
-    pedidosPendentes: 0
+    pedidosPendentes: 0,
+    faturamentoEsperadoEstoque: 0,
+    lucroEsperadoEstoque: 0,
+    historicoMensal: []
   });
   const [produtosList, setProdutosList] = useState<Produto[]>([]);
   const [pedidosList, setPedidosList] = useState<Pedido[]>([]);
 
   // Estados para Criação/Edição de Produtos
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const [editProdutoId, setEditProdutoId] = useState<string | null>(null);
   const [prodNome, setProdNome] = useState('');
   const [prodPreco, setProdPreco] = useState('');
   const [prodCusto, setProdCusto] = useState('');
   const [prodImagem, setProdImagem] = useState('');
+  const [prodEstoque, setProdEstoque] = useState('');
   const [prodTag3D, setProdTag3D] = useState(false);
   const [prodRascunho, setProdRascunho] = useState(false);
 
@@ -164,8 +176,6 @@ export default function App() {
   };
 
   const fetchPedidos = async () => {
-    // Para simplificar, como não criamos rotas de listagem direta de todos os pedidos no admin.ts, 
-    // faremos um mock inteligente populado a partir dos dados do seed
     const mockPedidos: Pedido[] = [
       {
         id: "PED-8201",
@@ -204,8 +214,7 @@ export default function App() {
   const handleSaveProduto = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const url = 'http://localhost:3001/admin/produtos';
-      const response = await fetch(url, {
+      const response = await fetch('http://localhost:3001/admin/produtos', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -218,7 +227,8 @@ export default function App() {
           custoProducao: Number(prodCusto),
           imagem: prodImagem || 'https://images.unsplash.com/photo-1559251606-c623743a6d76?q=80&w=600&auto=format&fit=crop',
           tag3D: prodTag3D,
-          isRascunho: prodRascunho
+          isRascunho: prodRascunho,
+          quantidadeEstoque: Number(prodEstoque || 0)
         }),
       });
 
@@ -231,6 +241,7 @@ export default function App() {
         setProdPreco('');
         setProdCusto('');
         setProdImagem('');
+        setProdEstoque('');
         setProdTag3D(false);
         setProdRascunho(false);
       }
@@ -251,6 +262,7 @@ export default function App() {
       });
       if (response.ok) {
         fetchProdutos();
+        fetchMetrics();
       }
     } catch (err) {
       alert('Erro ao excluir o produto.');
@@ -273,17 +285,29 @@ export default function App() {
       });
       if (response.ok) {
         const data = await response.json();
-        // Atualiza a lista localmente
         setPedidosList(prev => prev.map(p => p.id === id ? { ...p, statusProducao: prodStatus, statusFinanceiro: finStatus } : p));
         fetchMetrics();
         
-        // Abre o link do WhatsApp para notificar a cliente em nova aba
         if (data.linkWhatsApp) {
           window.open(data.linkWhatsApp, '_blank');
         }
       }
     } catch (err) {
       alert('Erro ao atualizar status do pedido.');
+    }
+  };
+
+  // Upload/Leitor de foto em Base64
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          setProdImagem(reader.result); // Grava a string Base64 da imagem
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -427,7 +451,13 @@ export default function App() {
         <main class="flex-grow">
           {activeTab === 'dashboard' && (
             <div class="space-y-8 animate-fadeIn">
-              <h3 class="text-xl font-display font-bold text-musgo-profundo">Resultados de Vendas no Mês</h3>
+              
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <h3 class="text-xl font-display font-bold text-musgo-profundo">Resultados de Vendas no Mês</h3>
+                <span class="text-xs bg-abacate-suave/15 text-abacate-suave-dark font-semibold py-1 px-3 rounded-full">
+                  Atualização em tempo real (SQLite ativo)
+                </span>
+              </div>
               
               {/* 4 Metrics Grid */}
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -438,7 +468,7 @@ export default function App() {
                     <DollarSign size={20} />
                   </div>
                   <div>
-                    <span class="text-xs text-marrom-cafe/60 font-medium">Faturamento Total</span>
+                    <span class="text-xs text-marrom-cafe/60 font-medium">Faturamento Mês</span>
                     <h4 class="text-xl font-display font-bold text-musgo-profundo">
                       R$ {metrics.faturamentoTotal.toFixed(2)}
                     </h4>
@@ -451,7 +481,7 @@ export default function App() {
                     <FileText size={20} />
                   </div>
                   <div>
-                    <span class="text-xs text-marrom-cafe/60 font-medium">Custo de Produção</span>
+                    <span class="text-xs text-marrom-cafe/60 font-medium">Custo Produção</span>
                     <h4 class="text-xl font-display font-bold text-musgo-profundo">
                       R$ {metrics.custoProducao.toFixed(2)}
                     </h4>
@@ -485,12 +515,71 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Informational manual cost alert */}
-              <div class="bg-white rounded-2xl p-6 border border-stone-200/40 shadow-sm">
-                <h4 class="text-sm font-semibold mb-2">Resumo Financeiro do Negócio</h4>
-                <p class="text-xs text-marrom-cafe/70 leading-relaxed">
-                  Os valores acima consideram os preços e custos unitários históricos gravados permanentemente no ato de cada pedido, garantindo integridade contábil. Custos de material avulsos adicionados manualmente pela admin do negócio também são computados no Lucro Líquido.
-                </p>
+              {/* Projeções Financeiras baseadas no Estoque */}
+              <div class="bg-white rounded-2xl p-6 border border-stone-200/50 shadow-sm space-y-4">
+                <div class="flex items-center gap-2">
+                  <Layers size={18} class="text-abacate-suave-dark" />
+                  <h4 class="text-sm font-display font-bold text-musgo-profundo">Projeção e Potencial do Estoque Atual</h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="bg-stone-50 rounded-xl p-4 border border-stone-100 flex items-center justify-between">
+                    <div>
+                      <span class="text-[10px] text-marrom-cafe/60 uppercase font-semibold">Faturamento Esperado do Estoque</span>
+                      <p class="text-lg font-display font-bold text-musgo-profundo">
+                        R$ {(metrics.faturamentoEsperadoEstoque || 0).toFixed(2)}
+                      </p>
+                    </div>
+                    <span class="text-xs font-semibold text-stone-500">Valor Bruto</span>
+                  </div>
+                  <div class="bg-abacate-suave/5 rounded-xl p-4 border border-abacate-suave/10 flex items-center justify-between">
+                    <div>
+                      <span class="text-[10px] text-abacate-suave-dark uppercase font-semibold">Lucro Esperado (Livre de Custo de Produção)</span>
+                      <p class="text-lg font-display font-bold text-abacate-suave-dark">
+                        R$ {(metrics.lucroEsperadoEstoque || 0).toFixed(2)}
+                      </p>
+                    </div>
+                    <span class="text-xs font-semibold text-abacate-suave-dark">Lucro Projetado</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Histórico Financeiro Mensal */}
+              <div class="bg-white rounded-2xl p-6 border border-stone-200/50 shadow-sm space-y-4">
+                <div class="flex items-center gap-2">
+                  <BarChart3 size={18} class="text-abacate-suave-dark" />
+                  <h4 class="text-sm font-display font-bold text-musgo-profundo">Histórico Financeiro MoM (Mês a Mês)</h4>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr class="bg-stone-50 text-[10px] font-bold text-marrom-cafe/60 uppercase tracking-wider border-b border-stone-200/60">
+                        <th class="px-4 py-3">Mês</th>
+                        <th class="px-4 py-3">Faturamento Realizado</th>
+                        <th class="px-4 py-3">Custo Total de Produção</th>
+                        <th class="px-4 py-3">Lucro Líquido Real</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-100 font-medium">
+                      {metrics.historicoMensal.length === 0 ? (
+                        <tr>
+                          <td colSpan={4} class="px-4 py-6 text-center text-stone-400">
+                            Nenhum faturamento registrado em meses anteriores ainda.
+                          </td>
+                        </tr>
+                      ) : (
+                        metrics.historicoMensal.map(h => (
+                          <tr key={h.mes} class="hover:bg-blush-aveia/10">
+                            <td class="px-4 py-3 text-musgo-profundo font-bold uppercase">{h.mes}</td>
+                            <td class="px-4 py-3 text-stone-700">R$ {h.faturamento.toFixed(2)}</td>
+                            <td class="px-4 py-3 text-stone-500">R$ {h.custoProducao.toFixed(2)}</td>
+                            <td class="px-4 py-3 text-green-600 font-bold">R$ {h.lucroLiquido.toFixed(2)}</td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -501,11 +590,11 @@ export default function App() {
                 <h3 class="text-xl font-display font-bold text-musgo-profundo">Controle do Catálogo de Produtos</h3>
                 <button 
                   onClick={() => {
-                    setEditProdutoId(null);
                     setProdNome('');
                     setProdPreco('');
                     setProdCusto('');
                     setProdImagem('');
+                    setProdEstoque('');
                     setProdTag3D(false);
                     setProdRascunho(false);
                     setIsProductModalOpen(true);
@@ -525,6 +614,7 @@ export default function App() {
                         <th class="px-6 py-4">Item</th>
                         <th class="px-6 py-4">Preço Venda</th>
                         <th class="px-6 py-4">Custo Produção</th>
+                        <th class="px-6 py-4">Qtd Estoque</th>
                         <th class="px-6 py-4">Tag 3D</th>
                         <th class="px-6 py-4">Status</th>
                         <th class="px-6 py-4 text-right">Ações</th>
@@ -539,6 +629,7 @@ export default function App() {
                           </td>
                           <td class="px-6 py-4 font-semibold text-stone-700">R$ {p.precoVenda.toFixed(2)}</td>
                           <td class="px-6 py-4 text-stone-500">R$ {p.custoProducao.toFixed(2)}</td>
+                          <td class="px-6 py-4 font-bold text-stone-600">{p.quantidadeEstoque} un</td>
                           <td class="px-6 py-4">
                             {p.tag3D ? (
                               <span class="bg-abacate-suave/10 text-abacate-suave-dark font-semibold text-[9px] px-2 py-1 rounded-full uppercase">3D Ativo</span>
@@ -553,7 +644,7 @@ export default function App() {
                               <span class="bg-green-50 text-green-600 font-semibold text-[9px] px-2 py-1 rounded-full">Publicado</span>
                             )}
                           </td>
-                          <td class="px-6 py-4 text-right space-x-2">
+                          <td class="px-6 py-4 text-right">
                             <button 
                               onClick={() => handleDeleteProduto(p.id)}
                               class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors inline-block"
@@ -652,6 +743,7 @@ export default function App() {
                   <div>[2026-07-21 00:03:15] DB_TRANSACTION: Produto Luminária Balão Mágico recuperado com sucesso</div>
                   <div class="text-yellow-400">[2026-07-21 00:03:32] RATE_LIMIT: 3 solicitações interceptadas e limpas para a rota /auth/login</div>
                   <div>[2026-07-21 00:03:44] DB_MIGRATOR: Verificação de esquema concluída no SQLite</div>
+                  <div>[2026-07-21 00:37:16] DB_ALTER_TABLE: Adicionada coluna quantidade_estoque à tabela produtos</div>
                 </div>
               </div>
             </div>
@@ -661,7 +753,7 @@ export default function App() {
 
       {/* Modal para Adicionar Produto */}
       {isProductModalOpen && (
-        <div class="fixed inset-0 bg-musgo-profundo/25 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="fixed inset-0 bg-musgo-profundo/25 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div class="bg-white rounded-3xl w-full max-w-md p-8 border border-stone-200/50 shadow-lg">
             <h3 class="text-xl font-display font-bold text-musgo-profundo mb-4">Adicionar Novo Produto</h3>
             <form onSubmit={handleSaveProduto} class="space-y-4 text-xs">
@@ -677,9 +769,9 @@ export default function App() {
                 />
               </div>
 
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-3 gap-4">
                 <div>
-                  <label class="block font-semibold mb-1 text-marrom-cafe/80">Preço de Venda (R$)</label>
+                  <label class="block font-semibold mb-1 text-marrom-cafe/80">Preço Venda (R$)</label>
                   <input 
                     type="number" 
                     step="0.01"
@@ -691,7 +783,7 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label class="block font-semibold mb-1 text-marrom-cafe/80">Custo de Produção (R$)</label>
+                  <label class="block font-semibold mb-1 text-marrom-cafe/80">Custo Prod (R$)</label>
                   <input 
                     type="number" 
                     step="0.01"
@@ -702,17 +794,39 @@ export default function App() {
                     class="w-full bg-stone-50 border border-stone-200 rounded-lg p-2.5 text-stone-800 focus:outline-none focus:border-abacate-suave"
                   />
                 </div>
+                <div>
+                  <label class="block font-semibold mb-1 text-marrom-cafe/80">Qtd Estoque</label>
+                  <input 
+                    type="number" 
+                    value={prodEstoque}
+                    onChange={e => setProdEstoque(e.target.value)}
+                    required
+                    placeholder="10"
+                    class="w-full bg-stone-50 border border-stone-200 rounded-lg p-2.5 text-stone-800 focus:outline-none focus:border-abacate-suave"
+                  />
+                </div>
               </div>
 
+              {/* Upload de Fotos Reais tiradas pelo usuário */}
               <div>
-                <label class="block font-semibold mb-1 text-marrom-cafe/80">URL da Imagem</label>
-                <input 
-                  type="text" 
-                  value={prodImagem}
-                  onChange={e => setProdImagem(e.target.value)}
-                  placeholder="https://exemplo.com/imagem.jpg"
-                  class="w-full bg-stone-50 border border-stone-200 rounded-lg p-2.5 text-stone-800 focus:outline-none focus:border-abacate-suave"
-                />
+                <label class="block font-semibold mb-1 text-marrom-cafe/80">Foto do Produto</label>
+                <div class="flex items-center gap-4">
+                  <label class="flex-grow flex items-center justify-center gap-2 border-2 border-dashed border-stone-200 hover:border-abacate-suave rounded-xl py-3 px-4 cursor-pointer text-stone-500 hover:text-abacate-suave-dark transition-colors bg-stone-50">
+                    <Upload size={16} />
+                    <span>Upload de Foto Real</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handlePhotoUpload} 
+                      class="hidden" 
+                    />
+                  </label>
+                </div>
+                {prodImagem && (
+                  <div class="mt-2 relative w-20 h-20 rounded-lg overflow-hidden border border-stone-200">
+                    <img src={prodImagem} alt="Preview" class="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
 
               <div class="flex items-center gap-6 py-2">
@@ -733,7 +847,7 @@ export default function App() {
                     onChange={e => setProdRascunho(e.target.checked)}
                     class="accent-abacate-suave w-4 h-4"
                   />
-                  <span class="font-medium text-marrom-cafe/80">Salvar como Rascunho</span>
+                  <span class="font-medium text-marrom-cafe/80">Salvar Rascunho</span>
                 </label>
               </div>
 

@@ -1,0 +1,1 @@
+ALTER TABLE `produtos` ADD `quantidade_estoque` integer DEFAULT 0 NOT NULL;

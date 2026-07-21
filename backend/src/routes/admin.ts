@@ -126,12 +126,45 @@ export async function rotasAdmin(app: FastifyInstance) {
 
     const pedidosPendentes = resultPendentes[0]?.count || 0;
 
+    // f) Projeções Financeiras baseadas no Estoque Atual de Produtos
+    const resultEstoqueProjecao = await db.select({
+      faturamentoEsperado: sql<number>`SUM(${produtos.precoVenda} * ${produtos.quantidadeEstoque})`,
+      lucroEsperado: sql<number>`SUM((${produtos.precoVenda} - ${produtos.custoProducao}) * ${produtos.quantidadeEstoque})`
+    })
+    .from(produtos)
+    .where(isNull(produtos.deletedAt));
+
+    const faturamentoEsperadoEstoque = resultEstoqueProjecao[0]?.faturamentoEsperado || 0;
+    const lucroEsperadoEstoque = resultEstoqueProjecao[0]?.lucroEsperado || 0;
+
+    // g) Histórico Financeiro Mensal (Agrupado por mês)
+    const resultHistorico = await db.select({
+      mes: sql<string>`strftime('%Y-%m', ${pedidos.criadoEm})`,
+      faturamento: sql<number>`SUM(${itensPedido.precoUnitarioHistorico} * ${itensPedido.quantidade})`,
+      custoProducao: sql<number>`SUM(${itensPedido.custoUnitarioHistorico} * ${itensPedido.quantidade})`
+    })
+    .from(itensPedido)
+    .innerJoin(pedidos, eq(itensPedido.pedidoId, pedidos.id))
+    .where(sql`(${pedidos.statusProducao} = 'entregue' OR ${pedidos.statusFinanceiro} = 'sinal_pago' OR ${pedidos.statusFinanceiro} = 'totalmente_pago')`)
+    .groupBy(sql`strftime('%Y-%m', ${pedidos.criadoEm})`)
+    .orderBy(sql`strftime('%Y-%m', ${pedidos.criadoEm}) DESC`);
+
+    const historicoMensal = resultHistorico.map(h => ({
+      mes: h.mes,
+      faturamento: h.faturamento || 0,
+      custoProducao: h.custoProducao || 0,
+      lucroLiquido: (h.faturamento || 0) - (h.custoProducao || 0)
+    }));
+
     return reply.send({
       faturamentoTotal,
       custoMaterial,
       custoProducao,
       lucroLiquido,
-      pedidosPendentes
+      pedidosPendentes,
+      faturamentoEsperadoEstoque,
+      lucroEsperadoEstoque,
+      historicoMensal
     });
   });
 
@@ -154,7 +187,7 @@ export async function rotasAdmin(app: FastifyInstance) {
   }, async (request, reply) => {
     // Sanitização de entradas contra XSS
     const cleanBody = sanitizarObjeto(request.body as any);
-    const { nome, precoVenda, custoProducao, imagem, tag3D, isRascunho } = cleanBody;
+    const { nome, precoVenda, custoProducao, imagem, tag3D, isRascunho, quantidadeEstoque } = cleanBody;
 
     const novo = await db.insert(produtos).values({
       nome,
@@ -162,7 +195,8 @@ export async function rotasAdmin(app: FastifyInstance) {
       custoProducao: Number(custoProducao),
       imagem,
       tag3D: !!tag3D,
-      isRascunho: !!isRascunho
+      isRascunho: !!isRascunho,
+      quantidadeEstoque: Number(quantidadeEstoque || 0)
     }).returning();
 
     return reply.status(201).send(novo[0]);

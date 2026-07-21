@@ -1,16 +1,16 @@
 # Graph Report - atelie-sonho-encantado  (2026-07-20)
 
 ## Corpus Check
-- 66 files · ~37,296 words
+- 68 files · ~38,650 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 469 nodes · 470 edges · 43 communities (36 shown, 7 thin omitted)
+- 470 nodes · 478 edges · 44 communities (37 shown, 7 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf5fe11d`
+- Built from commit: `4281bb20`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -47,6 +47,7 @@
 - setup-tasks.sh
 - compilerOptions
 - package.json
+- package.json
 - compilerOptions
 - devDependencies
 - React + TypeScript + Vite
@@ -79,7 +80,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (43 total, 7 thin omitted)
+## Communities (44 total, 7 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.07
@@ -90,8 +91,8 @@ Cohesion: 0.07
 Nodes (26): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation for User Story 2, Implementation for User Story 3, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 Only) (+18 more)
 
 ### Community 2 - "package.json"
-Cohesion: 0.06
-Nodes (34): argon2, dependencies, argon2, drizzle-orm, fastify, @fastify/cors, @fastify/helmet, @fastify/jwt (+26 more)
+Cohesion: 0.10
+Nodes (21): argon2, dependencies, argon2, drizzle-orm, fastify, @fastify/cors, @fastify/helmet, @fastify/jwt (+13 more)
 
 ### Community 3 - "📜 Constituição do Projeto (Ateliê Sonho Encantado)"
 Cohesion: 0.12
@@ -119,7 +120,7 @@ Nodes (25): 1. Initialize Analysis Context, 2. Load Artifacts (Progressive Discl
 
 ### Community 9 - "4. Detection Passes (Token-Efficient Analysis)"
 Cohesion: 0.16
-Nodes (19): db, sqlite, rodarMigracoes(), seed(), validarJWT(), verificarRole(), validarCSRF(), rotasAdmin() (+11 more)
+Nodes (21): db, sqlite, rodarMigracoes(), seed(), validarJWT(), verificarRole(), validarCSRF(), rotasAdmin() (+13 more)
 
 ### Community 10 - "Feature Specification: [FEATURE NAME]"
 Cohesion: 0.15
@@ -138,8 +139,8 @@ Cohesion: 0.18
 Nodes (10): Checklist Format (REQUIRED), Completion Report, Done When, Mandatory Post-Execution Hooks, Outline, Phase Structure, Pre-Execution Checks, Task Generation Rules (+2 more)
 
 ### Community 14 - "produtos.ts"
-Cohesion: 0.38
-Nodes (5): produtosDb, CriarProdutoInput, CriarProdutoSchema, RespostaProduto, RespostaProdutoSchema
+Cohesion: 0.40
+Nodes (4): CriarProdutoInput, CriarProdutoSchema, RespostaProduto, RespostaProdutoSchema
 
 ### Community 15 - "Core Principles"
 Cohesion: 0.18
@@ -181,6 +182,10 @@ Nodes (4): [Category 1], [Category 2], [CHECKLIST TYPE] Checklist: [FEATURE NAME
 Cohesion: 0.08
 Nodes (23): compilerOptions, allowArbitraryExtensions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection (+15 more)
 
+### Community 34 - "package.json"
+Cohesion: 0.14
+Nodes (13): devDependencies, drizzle-kit, @types/node, typescript, @types/node, typescript, name, scripts (+5 more)
+
 ### Community 36 - "package.json"
 Cohesion: 0.09
 Nodes (22): dependencies, autoprefixer, lucide-react, postcss, react, react-dom, tailwindcss, react (+14 more)
@@ -198,24 +203,24 @@ Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
 ## Knowledge Gaps
-- **280 isolated node(s):** `check-prerequisites.sh script`, `common.sh script`, `create-new-feature.sh script`, `setup-plan.sh script`, `setup-tasks.sh script` (+275 more)
+- **282 isolated node(s):** `check-prerequisites.sh script`, `common.sh script`, `create-new-feature.sh script`, `setup-plan.sh script`, `setup-tasks.sh script` (+277 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
+- **Why does `dependencies` connect `package.json` to `package.json`?**
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
 - **What connects `check-prerequisites.sh script`, `common.sh script`, `create-new-feature.sh script` to the rest of the system?**
-  _280 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _282 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
 - **Should `Tasks: [FEATURE NAME]` be split into smaller, more focused modules?**
   _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
 - **Should `📜 Constituição do Projeto (Ateliê Sonho Encantado)` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `common.sh` be split into smaller, more focused modules?**
-  _Cohesion score 0.1323529411764706 - nodes in this community are weakly interconnected._

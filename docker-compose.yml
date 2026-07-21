@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      # Mapeamento do banco SQLite persistente para não perder dados ao reiniciar container
+      - ./backend/sqlite.db:/usr/src/app/sqlite.db
+      - ./backend/drizzle:/usr/src/app/drizzle
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=teste
+      - STORE_WHATSAPP=5511999999999
+    restart: always
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    restart: always
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    restart: always
+    depends_on:
+      - backend
