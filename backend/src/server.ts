@@ -34,7 +34,7 @@ app.register(rateLimit, {
 
 // JWT para autenticação segura baseada em tokens com roles
 app.register(jwt, {
-  secret: 'segredo-magico-do-atelie-sonho-encantado-2026',
+  secret: process.env.JWT_SECRET || 'segredo-magico-do-atelie-sonho-encantado-2026',
 });
 
 app.register(cors, {
@@ -66,7 +66,7 @@ app.register(rotasAdmin);
 
 import { rodarMigracoes } from './config/migrate.ts';
 
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const run = async () => {
   try {
     // Executa as migrações automaticamente antes de expor a API

@@ -1,13 +1,18 @@
 # Graph Report - atelie-sonho-encantado  (2026-07-20)
 
 ## Corpus Check
-- 55 files · ~33,302 words
+- 66 files · ~37,296 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 361 nodes · 368 edges · 35 communities (29 shown, 6 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.8)
+- 469 nodes · 470 edges · 43 communities (36 shown, 7 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `bf5fe11d`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - dependencies
@@ -40,19 +45,24 @@
 - check-prerequisites.sh
 - setup-plan.sh
 - setup-tasks.sh
+- compilerOptions
 - package.json
+- compilerOptions
+- devDependencies
+- React + TypeScript + Vite
+- tsconfig.json
 
 ## God Nodes (most connected - your core abstractions)
-1. `Tasks: [FEATURE NAME]` - 13 edges
-2. `compilerOptions` - 12 edges
-3. `compilerOptions` - 8 edges
-4. `Execution Steps` - 7 edges
-5. `4. Detection Passes (Token-Efficient Analysis)` - 7 edges
-6. `Execution Steps` - 7 edges
-7. `📜 Constituição do Projeto (Ateliê Sonho Encantado)` - 7 edges
-8. `rotasAdmin()` - 6 edges
-9. `Core Principles` - 6 edges
-10. `Implementation Plan: [FEATURE]` - 6 edges
+1. `compilerOptions` - 18 edges
+2. `compilerOptions` - 15 edges
+3. `Tasks: [FEATURE NAME]` - 13 edges
+4. `compilerOptions` - 12 edges
+5. `compilerOptions` - 8 edges
+6. `rotasAdmin()` - 7 edges
+7. `Execution Steps` - 7 edges
+8. `4. Detection Passes (Token-Efficient Analysis)` - 7 edges
+9. `Execution Steps` - 7 edges
+10. `📜 Constituição do Projeto (Ateliê Sonho Encantado)` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `seed()` --calls--> `rodarMigracoes()`  [EXTRACTED]
@@ -61,15 +71,15 @@
   backend/src/server.ts → backend/src/config/migrate.ts
 - `rotasAdmin()` --indirect_call--> `validarJWT()`  [INFERRED]
   backend/src/routes/admin.ts → backend/src/middleware/auth.ts
+- `rotasAdmin()` --indirect_call--> `validarCSRF()`  [INFERRED]
+  backend/src/routes/admin.ts → backend/src/middleware/csrf.ts
 - `rotasAdmin()` --calls--> `verificarRole()`  [EXTRACTED]
   backend/src/routes/admin.ts → backend/src/middleware/auth.ts
-- `rotasAdmin()` --calls--> `sanitizarObjeto()`  [EXTRACTED]
-  backend/src/routes/admin.ts → backend/src/utils/sanitize.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (35 total, 6 thin omitted)
+## Communities (43 total, 7 thin omitted)
 
 ### Community 0 - "dependencies"
 Cohesion: 0.07
@@ -80,8 +90,8 @@ Cohesion: 0.07
 Nodes (26): Dependencies & Execution Order, Format: `[ID] [P?] [Story] Description`, Implementation for User Story 1, Implementation for User Story 2, Implementation for User Story 3, Implementation Strategy, Incremental Delivery, MVP First (User Story 1 Only) (+18 more)
 
 ### Community 2 - "package.json"
-Cohesion: 0.10
-Nodes (21): argon2, dependencies, argon2, drizzle-orm, fastify, @fastify/cors, @fastify/helmet, @fastify/jwt (+13 more)
+Cohesion: 0.06
+Nodes (34): argon2, dependencies, argon2, drizzle-orm, fastify, @fastify/cors, @fastify/helmet, @fastify/jwt (+26 more)
 
 ### Community 3 - "📜 Constituição do Projeto (Ateliê Sonho Encantado)"
 Cohesion: 0.12
@@ -109,7 +119,7 @@ Nodes (25): 1. Initialize Analysis Context, 2. Load Artifacts (Progressive Discl
 
 ### Community 9 - "4. Detection Passes (Token-Efficient Analysis)"
 Cohesion: 0.16
-Nodes (18): db, sqlite, rodarMigracoes(), seed(), validarJWT(), verificarRole(), validarCSRF(), rotasAdmin() (+10 more)
+Nodes (19): db, sqlite, rodarMigracoes(), seed(), validarJWT(), verificarRole(), validarCSRF(), rotasAdmin() (+11 more)
 
 ### Community 10 - "Feature Specification: [FEATURE NAME]"
 Cohesion: 0.15
@@ -128,8 +138,8 @@ Cohesion: 0.18
 Nodes (10): Checklist Format (REQUIRED), Completion Report, Done When, Mandatory Post-Execution Hooks, Outline, Phase Structure, Pre-Execution Checks, Task Generation Rules (+2 more)
 
 ### Community 14 - "produtos.ts"
-Cohesion: 0.32
-Nodes (6): produtosDb, rotasProdutos(), CriarProdutoInput, CriarProdutoSchema, RespostaProduto, RespostaProdutoSchema
+Cohesion: 0.38
+Nodes (5): produtosDb, CriarProdutoInput, CriarProdutoSchema, RespostaProduto, RespostaProdutoSchema
 
 ### Community 15 - "Core Principles"
 Cohesion: 0.18
@@ -152,8 +162,8 @@ Cohesion: 0.29
 Nodes (6): Completion Report, Done When, Mandatory Post-Execution Hooks, Outline, Pre-Execution Checks, User Input
 
 ### Community 20 - "index.astro"
-Cohesion: 0.33
-Nodes (4): CardProduto(), CardProdutoProps, ../layouts/BaseHTML.astro, ../components/CardProduto
+Cohesion: 0.09
+Nodes (16): plugins, rules, react/only-export-components, react/rules-of-hooks, $schema, DashboardMetrics, Pedido, Produto (+8 more)
 
 ### Community 21 - "SKILL.md"
 Cohesion: 0.40
@@ -167,28 +177,44 @@ Nodes (4): Outline, Post-Execution Checks, Pre-Execution Checks, User Input
 Cohesion: 0.40
 Nodes (4): [Category 1], [Category 2], [CHECKLIST TYPE] Checklist: [FEATURE NAME], Notes
 
-### Community 34 - "package.json"
-Cohesion: 0.14
-Nodes (13): devDependencies, drizzle-kit, @types/node, typescript, typescript, name, scripts, dev (+5 more)
+### Community 31 - "compilerOptions"
+Cohesion: 0.08
+Nodes (23): compilerOptions, allowArbitraryExtensions, allowImportingTsExtensions, erasableSyntaxOnly, jsx, lib, module, moduleDetection (+15 more)
+
+### Community 36 - "package.json"
+Cohesion: 0.09
+Nodes (22): dependencies, autoprefixer, lucide-react, postcss, react, react-dom, tailwindcss, react (+14 more)
+
+### Community 37 - "compilerOptions"
+Cohesion: 0.10
+Nodes (19): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+11 more)
+
+### Community 38 - "devDependencies"
+Cohesion: 0.13
+Nodes (15): devDependencies, oxlint, @types/node, @types/react, @types/react-dom, typescript, vite, @vitejs/plugin-react (+7 more)
+
+### Community 39 - "React + TypeScript + Vite"
+Cohesion: 0.50
+Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
 ## Knowledge Gaps
-- **213 isolated node(s):** `check-prerequisites.sh script`, `common.sh script`, `create-new-feature.sh script`, `setup-plan.sh script`, `setup-tasks.sh script` (+208 more)
+- **280 isolated node(s):** `check-prerequisites.sh script`, `common.sh script`, `create-new-feature.sh script`, `setup-plan.sh script`, `setup-tasks.sh script` (+275 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **6 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `package.json` to `package.json`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Why does `devDependencies` connect `devDependencies` to `package.json`?**
+  _High betweenness centrality (0.004) - this node is a cross-community bridge._
 - **What connects `check-prerequisites.sh script`, `common.sh script`, `create-new-feature.sh script` to the rest of the system?**
-  _213 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _280 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
 - **Should `Tasks: [FEATURE NAME]` be split into smaller, more focused modules?**
   _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._
 - **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.09523809523809523 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
 - **Should `📜 Constituição do Projeto (Ateliê Sonho Encantado)` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
 - **Should `common.sh` be split into smaller, more focused modules?**

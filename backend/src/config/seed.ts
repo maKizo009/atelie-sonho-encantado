@@ -18,8 +18,8 @@ async function seed() {
     console.log('🧹 Tabelas limpas.');
 
     // 2. Criar Usuários com diferentes níveis (RBAC) e hashes seguros via argon2
-    const senhaAdminHash = await argon2.hash('admin123');
-    const senhaSuperuserHash = await argon2.hash('super123');
+    const senhaAdminHash = await argon2.hash('teste');
+    const senhaSuperuserHash = await argon2.hash('teste');
 
     const [adminUser] = await db.insert(usuarios).values({
       nome: 'Sandra (Dona da Loja)',

@@ -150,7 +150,7 @@ export async function rotasAdmin(app: FastifyInstance) {
   });
 
   app.post('/admin/produtos', {
-    preHandler: [validarJWT, verificarCSRF, verificarRole(['ADMIN', 'SUPERUSER'])]
+    preHandler: [validarJWT, validarCSRF, verificarRole(['ADMIN', 'SUPERUSER'])]
   }, async (request, reply) => {
     // Sanitização de entradas contra XSS
     const cleanBody = sanitizarObjeto(request.body as any);
@@ -169,7 +169,7 @@ export async function rotasAdmin(app: FastifyInstance) {
   });
 
   app.delete('/admin/produtos/:id', {
-    preHandler: [validarJWT, verificarCSRF, verificarRole(['ADMIN', 'SUPERUSER'])]
+    preHandler: [validarJWT, validarCSRF, verificarRole(['ADMIN', 'SUPERUSER'])]
   }, async (request, reply) => {
     const { id } = request.params as { id: string };
     
@@ -185,7 +185,7 @@ export async function rotasAdmin(app: FastifyInstance) {
   // 5. ATUALIZAÇÃO DE PEDIDOS & WHATSAPP
   // ==========================================
   app.put('/admin/pedidos/:id/status', {
-    preHandler: [validarJWT, verificarCSRF, verificarRole(['ADMIN', 'SUPERUSER'])]
+    preHandler: [validarJWT, validarCSRF, verificarRole(['ADMIN', 'SUPERUSER'])]
   }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const { statusProducao, statusFinanceiro } = sanitizarObjeto(request.body as any);

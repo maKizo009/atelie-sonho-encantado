@@ -30,8 +30,16 @@
   "28": "setup-plan.sh",
   "29": "setup-tasks.sh",
   "30": "astro.config.mjs",
+  "31": "compilerOptions",
   "32": "env.d.ts",
   "33": "tailwind.config.mjs",
-  "34": "package.json",
-  "35": "drizzle.config.ts"
+  "35": "drizzle.config.ts",
+  "36": "package.json",
+  "37": "compilerOptions",
+  "38": "devDependencies",
+  "39": "React + TypeScript + Vite",
+  "40": "tsconfig.json",
+  "41": "postcss.config.js",
+  "42": "tailwind.config.js",
+  "43": "vite.config.ts"
 }

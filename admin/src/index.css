@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Playpen+Sans:wght@300..800&family=Poppins:ital,wght@0,100..0,900;1,100..1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #F7F4EC; /* blush-aveia */
+  color: #3D2A1C; /* marrom-cafe */
+}

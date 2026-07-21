@@ -70,23 +70,13 @@
     "semantic_hash": ""
   },
   "backend/src/server.ts": {
-    "mtime": 1784591056.7514107,
-    "ast_hash": "9ce43ec64dc5e200a9158a86b84e0c93",
+    "mtime": 1784593146.134722,
+    "ast_hash": "cbd11e4e74e1b212398c45a1a45919de",
     "semantic_hash": ""
   },
   "backend/tsconfig.json": {
     "mtime": 1784586377.4376318,
     "ast_hash": "5ffb67feac17e8d4216d869f6ce8ab79",
-    "semantic_hash": ""
-  },
-  "frontend/.astro/settings.json": {
-    "mtime": 1784587140.857478,
-    "ast_hash": "a20725a54578c9f2f156e2fbd1e9be31",
-    "semantic_hash": ""
-  },
-  "frontend/.astro/types.d.ts": {
-    "mtime": 1784588050.205721,
-    "ast_hash": "72c584e3bd8b5f007b2beb870517b437",
     "semantic_hash": ""
   },
   "frontend/astro.config.mjs": {
@@ -255,8 +245,8 @@
     "semantic_hash": ""
   },
   "backend/src/config/seed.ts": {
-    "mtime": 1784591065.831352,
-    "ast_hash": "557bbde9925839efe98b9f5704bad028",
+    "mtime": 1784593148.8007052,
+    "ast_hash": "3f293527db90aa0798e6fffd2a85eaae",
     "semantic_hash": ""
   },
   "backend/src/middleware/auth.ts": {
@@ -287,6 +277,81 @@
   "backend/src/utils/whatsapp.ts": {
     "mtime": 1784591032.2445695,
     "ast_hash": "11ff8800c80a869d6a7a47e675c1f971",
+    "semantic_hash": ""
+  },
+  "admin/.oxlintrc.json": {
+    "mtime": 1784592135.513274,
+    "ast_hash": "029f4905006c1fffd96bc863e2d98d3e",
+    "semantic_hash": ""
+  },
+  "admin/package.json": {
+    "mtime": 1784592150.2339737,
+    "ast_hash": "48a32489d769474d7fab70231e0790c7",
+    "semantic_hash": ""
+  },
+  "admin/postcss.config.js": {
+    "mtime": 1784592155.0899444,
+    "ast_hash": "ef3ba2a81ba19f8ea5ddf625521e96f0",
+    "semantic_hash": ""
+  },
+  "admin/src/App.tsx": {
+    "mtime": 1784592172.263838,
+    "ast_hash": "dc414c3944425d0ddcc7f9ebbb90430f",
+    "semantic_hash": ""
+  },
+  "admin/src/main.tsx": {
+    "mtime": 1784592135.5130732,
+    "ast_hash": "787e5a07efeb2bf6209d5937195f2f68",
+    "semantic_hash": ""
+  },
+  "admin/tailwind.config.js": {
+    "mtime": 1784592153.0789568,
+    "ast_hash": "1828bd81e20b831ed90a37764049101d",
+    "semantic_hash": ""
+  },
+  "admin/tsconfig.app.json": {
+    "mtime": 1784592135.513274,
+    "ast_hash": "5f2dafd737dea8a4ddcbb10f5113ac5a",
+    "semantic_hash": ""
+  },
+  "admin/tsconfig.json": {
+    "mtime": 1784592135.513337,
+    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
+    "semantic_hash": ""
+  },
+  "admin/tsconfig.node.json": {
+    "mtime": 1784592135.5134459,
+    "ast_hash": "f9cb81ddcea69ffdab672fc8c48dca66",
+    "semantic_hash": ""
+  },
+  "admin/vite.config.ts": {
+    "mtime": 1784592135.5136516,
+    "ast_hash": "88439104b3c207f17d33ef3160e3b080",
+    "semantic_hash": ""
+  },
+  "admin/README.md": {
+    "mtime": 1784592135.5134459,
+    "ast_hash": "10495bfcc6c568eca4dab6dd5df795d3",
+    "semantic_hash": ""
+  },
+  "admin/index.html": {
+    "mtime": 1784592135.5132232,
+    "ast_hash": "e55a171b95e40c405f453a2017a16afe",
+    "semantic_hash": ""
+  },
+  "admin/src/assets/hero.png": {
+    "mtime": 1784592135.5128787,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": ""
+  },
+  "admin/src/assets/react.svg": {
+    "mtime": 1784592135.5129561,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": ""
+  },
+  "admin/src/assets/vite.svg": {
+    "mtime": 1784592135.5129561,
+    "ast_hash": "9960a24288958394ac50e57ff638b036",
     "semantic_hash": ""
   }
 }
