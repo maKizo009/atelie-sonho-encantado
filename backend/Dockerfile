@@ -1,4 +1,4 @@
-FROM oven/bun:1.1-alpine AS base
+FROM oven/bun:alpine AS base
 WORKDIR /usr/src/app
 
 # Copia os arquivos de pacotes para cache de dependências

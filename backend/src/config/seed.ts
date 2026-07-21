@@ -17,20 +17,25 @@ async function seed() {
 
     console.log('🧹 Tabelas limpas.');
 
-    // 2. Criar Usuários com diferentes níveis (RBAC) e hashes seguros via argon2
-    const senhaAdminHash = await argon2.hash('teste');
-    const senhaSuperuserHash = await argon2.hash('teste');
+    // 2. Criar Usuários dinamicamente lendo do arquivo .env com fallbacks de segurança
+    const adminEmail = process.env.ADMIN_EMAIL || 'sandra@atelie.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'teste';
+    const devEmail = process.env.DEV_EMAIL || 'dev@atelie.com';
+    const devPassword = process.env.DEV_PASSWORD || 'teste';
+
+    const senhaAdminHash = await argon2.hash(adminPassword);
+    const senhaSuperuserHash = await argon2.hash(devPassword);
 
     const [adminUser] = await db.insert(usuarios).values({
       nome: 'Sandra (Dona da Loja)',
-      email: 'sandra@atelie.com',
+      email: adminEmail,
       senhaHash: senhaAdminHash,
       role: 'ADMIN',
     }).returning();
 
     const [superUser] = await db.insert(usuarios).values({
       nome: 'Desenvolvedor Fallback',
-      email: 'dev@atelie.com',
+      email: devEmail,
       senhaHash: senhaSuperuserHash,
       role: 'SUPERUSER',
     }).returning();
